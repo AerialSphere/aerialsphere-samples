@@ -1,6 +1,6 @@
 ---
 name: AerialSphere Simple Demo
-description: Demonstrates embedding a panorama
+description: Demonstrates embedding a map
 resources:
   - https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js
   - https://aerialspheres.com/map/api/js?key=b60bbff7-1fb0-45f6-9ec5-c9a41f585490&version=1.1
