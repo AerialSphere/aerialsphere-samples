@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>embed</title>
+
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+    <!-- The Aerial Sphere API -->
+    <script src="/map/api/js?key=b60bbff7-1fb0-45f6-9ec5-c9a41f585490&version=1.1"></script>
+
+    <!-- Files for this demo only -->
+    <script src="https://aerialsphere-storages.s3-us-west-2.amazonaws.com/asw-prod/static/embed_demo/embed.js" defer></script>
+    <script src="https://aerialsphere-storages.s3-us-west-2.amazonaws.com/asw-prod/static/embed_demo/embed_data.js" defer></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+</head>
+<body style="position: absolute; left: 5px; right: 5px; top: 5px; bottom: 5px;">
+
+
+
+
+
+    <table style="width: 100%; height: 5%">
+        <tr>
+            <td>
+                Example 1
+                <input id="as1_active" type="text" value="Active" readonly>
+                <button id="make_as1_active" onClick="setActiveAsId('as1')">Activate</button>
+            </td>
+            <td>
+                Example 2
+                <input id="as2_active" type="text" value="Inactive" readonly>
+                <button id="make_as1_active" onClick="setActiveAsId('as2')">Activate</button>
+            </td>
+        </tr>
+    </table>
+    <table style="width: 100%; height: 45%">
+        <tr>
+            <td> <iframe id="as1" src="/map" frameBorder="0" style="width: 100%; height: 100%; boarder: 0px;"></iframe> </td>
+            <td> <iframe id="as2" src="/map" frameBorder="0" style="width: 100%; height: 100%; boarder: 0px;"></iframe> </td>
+        </tr>
+    </table>
+
+    <div style="padding: 0px 10px; height: 50%; overflow: auto; border: 1px solid lightgrey;">
+        <h1>AerialSphere</h1>
+        <h2>Aerial Sphere API Demo</h2>
+        <h3>Sending Your Data</h3>
+        <h4>Sample Data</h4>
+            <a href="https://aerialsphere-storages.s3-us-west-2.amazonaws.com/asw-prod/static/embed_demo/embed_data.js">embed_data.js</a>
+        <div style="width: 400px; height: 200px; overflow: auto; border: 1px solid lightgrey    ;">
+<pre>var sample_data = {
+	title: "My super cool map!",
+	sphere_lat: 33.300045,
+	sphere_lng: -111.7474365,
+	lookat_lat: 0.0,
+    lookat_lng: 0.0,
+    camera_fov: 90.0,
+    camera_fovmin: 90.0,
+    camera_fovmax: 90.0,
+    layers: [
+        {
+            name: "test_layer_1",
+            markers: [
+                {
+                    name: "test_marker_a",
+                    id: 1,
+                    lat: 33.300045,
+                    lng: -111.7474365,
+                    icon: "school"
+                },
+                {
+                    name: "Test Marker B",
+                    id: 2,
+                    lat: 33.3048513,
+                    lng: -111.7184258,
+                    icon: "poi"
+                },
+                {
+                    name: "Test Marker C",
+                    id: 3,
+                    lat: 33.307075,
+                    lng: -111.6789436,
+                    icon: "poi"
+                    // icon: "http://placehold.it/50x50"
+                }
+            ]
+        },
+        {
+            name: "Test Layer 2",
+            markers: [
+                {
+                    name: "Test Marker D",
+                    id: 4,
+                    lat: 33.2912925,
+                    lng: -111.7373943,
+                    icon: "food"
+                },
+                {
+                    name: "Test Marker E",
+                    id: 5,
+                    lat: 33.2943058,
+                    lng: -111.7012596,
+                    icon: "shopping"
+                }
+            ]
+        }
+    ]
+};</pre>
+        </div>
+        <button id="send_data" onClick="sendData()">Send Sample Data</button><br><br>
+
+        <button id="remove_all_markers" onClick="removeAllMarkers()">Clear</button><br><br>
+
+        <button id="open_map" onClick="openMap()">Open Map</button><br><br>
+
+        <h4>Get Nearest Pano Info</h4>
+        <table>
+            <tr>
+                <td> </td>
+                <td>lat</td>
+                <td>lon</td>
+            </tr>
+            <tr>
+                <td> <button id="get_nearest_pano" onClick="getNearestPano()">Get Pano</button> </td>
+                <td> <input id="input_lat2" type="number" name="lat" value="33.299935"> </td>
+                <td> <input id="input_lon2" type="number" name="lon" value="-111.720949"> </td>
+            </tr>
+        </table>
+        <table style="width: 100%;">
+            <tr>
+                <td style="width: 73px;" > Info </td>
+                <td> <input style="width: 100%;" id="nearest_pano_info" type="text" name="nearest_pano_info" value="Click Get Pano For Info" readonly> </td>
+            </tr>
+        </table>
+
+        <h4>Single marker</h4>
+        <table>
+            <tr>
+                <td> </td>
+                <td>lat</td>
+                <td>lon</td>
+                <td>title</td>
+                <td>marker id</td>
+                <td>div id</td>
+                <td>icon</td>
+                <td>layer</td>
+            </tr>
+            <tr>
+                <td> <button id="add_marker" onClick="addMarker()">Send</button> </td>
+                <td> <input id="input_lat" type="number" name="lat" value="33.299935"> </td>
+                <td> <input id="input_lon" type="number" name="lon" value="-111.720949"> </td>
+                <td> <input id="input_title" type="text" name="title" value="Marker Title"> </td>
+                <td> <input id="input_div_id" type="text" name="div_id" value="6"> </td>
+                <td> <input id="input_marker_id" type="text" name="marker_id" value="marker_callout_html"> </td>
+                <td>
+                    <select id="input_icon">
+                        <option value="poi">poi</option>
+                        <option value="pano">pano</option>
+                        <option value="search">search</option>
+                        <option value="whats_here">whats_here</option>
+                        <option value="school">school</option>
+                        <option value="food">food</option>
+                        <option value="shopping">shopping</option>
+                        <option value="home_for_sale">home_for_sale</option>
+                        <option value="apartment_for_sale">apartment_for_sale</option>
+                        <option value="source">source</option>
+                        <option value="target">target</option>
+                        <option value="http://placehold.it/50x50">http://placehold.it/50x50</option>
+                    </select>
+                </td>
+                <td> <input id="input_layer" type="text" name="layer" value="Custom Layer Name"> </td>
+            </tr>
+        </table>
+
+        <h4>Marker Callout HTML</h4>
+        <div id="marker_callout_html" style="
+                font-family: 'Times New Roman', Times, serif;
+                width: 200px;
+                background:lightcoral;
+                border-style: solid;
+                border-color: crimson;
+                padding: 10px;">
+            <p>Sample content of callout. This div has an id of: "marker_callout_html"</p>
+        </div>
+        <table>
+            <tr>
+                <td> </td>
+                <td>Div Id</td>
+            </tr>
+            <tr>
+                <td> <button id="add_callout" onClick="addMarkerCallout()">Add Callout</button> </td>
+                <td><input id="input_div_id" type="text" name="lat" value="marker_callout_html"></td>
+            </tr>
+        </table>
+
+
+        <h3>Layer Visibility</h3>
+        <table>
+            <tr>
+                <td> </td>
+                <td> </td>
+                <td>layer name</td>
+            </tr>
+            <tr>
+                <td> <button id="hide" onClick="hideLayer()">Hide</button> </td>
+                <td> <button id="show" onClick="showLayer()">Show</button> </td>
+                <td>
+                    <select id="input_layername">
+                        <option value="Test Layer 1">Test Layer 1</option>
+                        <option value="Test Layer 2">Test Layer 2</option>
+                        <option value="Custom Layer Name">Custom Layer Name</option>
+                        <option value="pano">pano</option>
+                        <option value="search">search</option>
+                        <option value="whats_here">whats_here</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+
+        <h3>Camera Angle</h3>
+        <table>
+            <tr>
+                <td> </td>
+                <td> </td>
+                <td>pan</td>
+                <td>tilt</td>
+            </tr>
+            <tr>
+                <td> <button id="set_pan_tilt" onClick="setCameraLookAt()">Apply</button> </td>
+                <td> <button id="set_pan_tilt" onClick="resetCameraLookAt()">Reset</button> </td>
+                <td> <input id="input_pan" type="number" name="Pan" value="0"> </td>
+                <td> <input id="input_tilt" type="number" name="Tilt" value="0"> </td>
+            </tr>
+        </table>
+
+        <h4>View Change Callback</h4>
+        <table>
+            <tr>
+                <td> View Change Callback Count </td>
+                <td> <input id="input_viewchangecount" type="number" name="count" value="0" readonly> </td>
+            </tr>
+        </table>
+
+        <h4>Mouse Position Callback</h4>
+        <p>Position updated on click event</p>
+        <table>
+            <tr>
+                <td>x</td>
+                <td>y</td>
+                <td>pan</td>
+                <td>tilt</td>
+                <td>lat</td>
+                <td>lon</td>
+            </tr>
+            <tr>
+                <td> <input id="input_mouse_x" type="number" name="input_mouse_x" value="0" readonly> </td>
+                <td> <input id="input_mouse_y" type="number" name="input_mouse_y" value="0" readonly> </td>
+                <td> <input id="input_mouse_pan" type="number" name="input_mouse_pan" value="0" readonly> </td>
+                <td> <input id="input_mouse_tilt" type="number" name="input_mouse_tilt" value="0" readonly> </td>
+                <td> <input id="input_mouse_lat" type="number" name="input_mouse_lat" value="0" readonly> </td>
+                <td> <input id="input_mouse_lon" type="number" name="input_mouse_lon" value="0" readonly> </td>
+            </tr>
+        </table>
+
+        <h4>Marker Click Callback</h4>
+        <p>Last marker clicked</p>
+        <input id="input_marker_clicked" type="text" name="input_marker_clicked" value="None" readonly>
+
+        <h3>Hide / Show Widgets</h3>
+        <table>
+            <tr>
+                <td> </td>
+                <td> </td>
+                <td>widget name</td>
+                <td>visible</td>
+            </tr>
+            <tr>
+                <td> <button id="set_widget_enabled" onClick="setWidgetEnabled()">Apply</button> </td>
+                <td> <button id="enable_all_widgets" onClick="enableAllWidgets()">Reset</button> </td>
+                <td>
+                    <select id="widget_name">
+                        <option value="compass">compass</option>
+                        <option value="googlemaps">googlemaps</option>
+                        <option value="geoinfo">geoinfo</option>
+                        <option value="gyro">gyro</option>
+                        <option value="introimage">introimage</option>
+                        <option value="logo">logo</option>
+                        <option value="markerdetails">markerdetails</option>
+                        <option value="messagebox">messagebox</option>
+                        <option value="placebuttons">placebuttons</option>
+                        <option value="buttonsbar">buttonsbar</option>
+                    </select>
+                </td>
+                <td>
+                    <select id="widget_enabled">
+                        <option value="false">false</option>
+                        <option value="true">true</option>
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+
+        <h3>Get / Set Variables</h3>
+        <table>
+            <tr>
+                <td> </td>
+                <td>variable</td>
+                <td>value</td>
+            </tr>
+            <tr>
+                <td> <button id="get_variable_value" onClick="getVar()">Get</button> </td>
+                <td> <input id="var_to_get" name="var_to_get" type="text" value=""> </td>
+                <td> <input id="var_to_get_value" name="var_to_get_value" type="text" value="" readonly> </td>
+            </tr>
+            <tr>
+                <td> <button id="get_variable_value" onClick="setVar()">Set</button> </td>
+                <td> <input id="var_to_set" name="var_to_set" type="text" value=""> </td>
+                <td> <input id="var_to_set_value" name="var_to_set_value" type="text" value=""> </td>
+            </tr>
+        </table>
+
+    </div>
+
+
+
+
+
+</body>
+</html>
