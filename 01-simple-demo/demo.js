@@ -1,2 +1,3 @@
 const elementId = "as1";
-const aerialSphere = new AerialSphere(document.getElementById(elementId));
+const data = {layers: []};
+const aerialSphere = new AerialSphere(document.getElementById(elementId), data);
