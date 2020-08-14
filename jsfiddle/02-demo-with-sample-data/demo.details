@@ -1,5 +1,5 @@
 ---
-name: AerialSphere Simple Demo
+name: AerialSphere Sample Data Demo
 description: Demonstrates initializing a panorama with sample data
 resources:
   - https://aerialsphere-storages.s3-us-west-2.amazonaws.com/asw-prod/static/embed_demo/embed_data.js
